@@ -207,12 +207,12 @@ def get_driver(download_folderpath):
         print("check web driver")
 
         if (download_folderpath == ""):
-            driver = webdriver.Chrome()
+            driver: selenium.webdriver.chrome.webdriver.WebDriver = webdriver.Chrome()
         else:
-            options = webdriver.ChromeOptions()
+            options: selenium.webdriver.chrome.options.Options = webdriver.ChromeOptions()
             prefs = {"download.default_directory" : download_folderpath}
             options.add_experimental_option("prefs", prefs)
-            driver = webdriver.Chrome(chrome_options=options)
+            driver: selenium.webdriver.chrome.webdriver.WebDriver = webdriver.Chrome(chrome_options=options)
 
         print("ready to web driver")
         driver.set_window_position(x, y)

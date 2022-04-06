@@ -5,12 +5,7 @@ import chromecontroller
 import utils
 import properties
 
-
-def load_properties(filepath):
-    if utils.isfileexists(filepath):
-        pass
-    else:
-        raise RuntimeError("Error: application.properties file not exists " + filepath)
+import selenium
 
 
 def main(folderpath):
@@ -23,16 +18,17 @@ def main(folderpath):
     print("chromedriver_filepath : " + chromedriver_filepath)
     print("chromedriver_version : " + chromedriver_version)
 
-    pproperties = properties.Properties()
+    pproperties: properties.Properties = properties.Properties()
     status = pproperties.load_properties(folderpath + "application.properties")
-
     if (status is None) or (status < 1):
         raise RuntimeError("Error : property load")
 
-    driver = chromecontroller.get_driver(folderpath)
+    driver: selenium.webdriver.chrome.webdriver.WebDriver = chromecontroller.get_driver(folderpath)
     if (driver == None):
         raise RuntimeError("fail chrome driver file load")
 
+
+    chromecontroller.do_move_url(driver, pproperties.url, True)
 
     return 0
 
