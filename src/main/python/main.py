@@ -3,6 +3,7 @@ import os
 
 import chromecontroller
 import utils
+import properties
 
 
 def load_properties(filepath):
@@ -22,7 +23,11 @@ def main(folderpath):
     print("chromedriver_filepath : " + chromedriver_filepath)
     print("chromedriver_version : " + chromedriver_version)
 
-    load_properties(folderpath + "application.properties1")
+    pproperties = properties.Properties()
+    status = pproperties.load_properties(folderpath + "application.properties")
+
+    if (status is None) or (status < 1):
+        raise RuntimeError("Error : property load")
 
     driver = chromecontroller.get_driver(folderpath)
     if (driver == None):
