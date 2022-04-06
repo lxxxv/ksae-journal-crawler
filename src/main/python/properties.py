@@ -5,6 +5,7 @@ class Properties:
     def __init__(self):
         self.url = ""
         self.param = ""
+        self.botContentList = ""
 
 
     def load_properties(self, filepath):
@@ -31,6 +32,9 @@ class Properties:
                                 status = status + 1
                             elif str_config.find("param=")>= 0:
                                 self.param = str_config.replace("param=", "").strip()
+                                status = status + 1
+                            elif str_config.find("botContentList=")>= 0:
+                                self.botContentList = str_config.replace("botContentList=", "").strip()
                                 status = status + 1
                 else:
                     break
