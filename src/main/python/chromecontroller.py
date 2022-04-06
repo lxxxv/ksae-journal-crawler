@@ -18,6 +18,7 @@ from typing import Optional, AnyStr
 
 import selenium
 import selenium.webdriver
+import selenium.webdriver.remote.webelement
 
 
 m_longint_sleep: int = 2
@@ -231,7 +232,7 @@ def get_driver(download_folderpath: str):
 
 def get_elements_by_xpath(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _str_path, _max_check_count):
     try:
-        element = None
+        element: selenium.webdriver.remote.webelement.WebElement = None
         if _max_check_count < 0:
             while 1:
                 element = _driver.find_elements_by_xpath(_str_path)
@@ -254,7 +255,7 @@ def get_elements_by_xpath(_driver: selenium.webdriver.chrome.webdriver.WebDriver
 
 def get_element_by_xpath(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _str_path, _max_check_count):
     try:
-        element = None
+        element: selenium.webdriver.remote.webelement.WebElement = None
         if _max_check_count < 0:
             while 1:
                 element = _driver.find_element_by_xpath(_str_path)
@@ -289,13 +290,13 @@ def do_move_url(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _url, _i
     return _driver.current_url
 
 
-def do_elements_click(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _element):
+def do_elements_click(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _element: selenium.webdriver.remote.webelement.WebElement):
     _element[0].click()
     time.sleep(random.randrange(1, m_longint_sleep))
     return 1
 
 
-def do_element_click(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _element):
+def do_element_click(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _element: selenium.webdriver.remote.webelement.WebElement):
     _element.click()
     time.sleep(random.randrange(1, m_longint_sleep))
     return 1
