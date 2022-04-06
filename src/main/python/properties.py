@@ -3,9 +3,11 @@ import utils
 
 class Properties:
     def __init__(self):
-        self.url = ""
-        self.param = ""
-        self.botContentList = ""
+        self.url: str = ""
+        self.param: str = ""
+        self.botContentList: str = ""
+        self.invalidurl: str = ""
+        self.maxbidx: int = 0
 
 
     def load_properties(self, filepath):
@@ -35,6 +37,12 @@ class Properties:
                                 status = status + 1
                             elif str_config.find("botContentList=")>= 0:
                                 self.botContentList = str_config.replace("botContentList=", "").strip()
+                                status = status + 1
+                            elif str_config.find("invalidurl=")>= 0:
+                                self.invalidurl = str_config.replace("invalidurl=", "").strip()
+                                status = status + 1
+                            elif str_config.find("maxbidx=")>= 0:
+                                self.maxbidx = int(str_config.replace("maxbidx=", "").strip())
                                 status = status + 1
                 else:
                     break

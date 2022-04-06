@@ -52,6 +52,14 @@ def start(pproperties, driver):
     return 0
 
 
+def checkurls(pproperties, driver):
+    idx: int = 0
+    while idx < 1000:
+        url = "http://journal.ksae.org/_common/do.php?a=full&b=22&bidx={bidx}".format(bidx=idx)
+        chromecontroller.do_move_url(driver, url, True)
+    return 0
+
+
 def main(folderpath):
     chromedriver_folderpath = folderpath + "chromedriver/"
     utils.createFolder(chromedriver_folderpath)
@@ -63,10 +71,9 @@ def main(folderpath):
 
     pproperties, driver = init(folderpath)
 
-    idx: int = 0
-    while idx < 1000:
-        url = "http://journal.ksae.org/_common/do.php?a=full&b=22&bidx={bidx}".format(bidx=idx)
-        chromecontroller.do_move_url(driver, url, True)
+    checkurls(pproperties, driver)
+
+
 
     url: str = chromecontroller.do_move_url(driver, pproperties.url + pproperties.param, True)
 
