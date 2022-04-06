@@ -17,12 +17,10 @@ from io import BytesIO
 from typing import Optional, AnyStr
 
 import selenium
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support.select import Select
+import selenium.webdriver
 
 
-m_longint_sleep:int = 2
+m_longint_sleep: int = 2
 
 
 def get_chromedriver_filename():
@@ -203,7 +201,7 @@ def init(folderpath: str):
     return chromedriver_filepath
 
 
-def get_driver(download_folderpath):
+def get_driver(download_folderpath: str):
     driver = None
     x = 0
     y = 0
@@ -214,12 +212,12 @@ def get_driver(download_folderpath):
         print("check web driver")
 
         if download_folderpath == "":
-            driver: selenium.webdriver.chrome.webdriver.WebDriver = webdriver.Chrome()
+            driver: selenium.webdriver.chrome.webdriver.WebDriver = selenium.webdriver.Chrome()
         else:
-            options: selenium.webdriver.chrome.options.Options = webdriver.ChromeOptions()
+            options: selenium.webdriver.chrome.options.Options = selenium.webdriver.ChromeOptions()
             prefs = {"download.default_directory" : download_folderpath}
             options.add_experimental_option("prefs", prefs)
-            driver: selenium.webdriver.chrome.webdriver.WebDriver = webdriver.Chrome(chrome_options=options)
+            driver: selenium.webdriver.chrome.webdriver.WebDriver = selenium.webdriver.Chrome(chrome_options=options)
 
         print("ready to web driver")
         driver.set_window_position(x, y)
@@ -231,13 +229,13 @@ def get_driver(download_folderpath):
         return None
 
 
-def get_elements_by_xpath(_driver, _str_path, _max_check_count):
+def get_elements_by_xpath(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _str_path, _max_check_count):
     try:
         element = None
         if _max_check_count < 0:
             while 1:
                 element = _driver.find_elements_by_xpath(_str_path)
-                if len(element)> 0:
+                if len(element) > 0:
                     break
             return element
         else:
@@ -254,7 +252,7 @@ def get_elements_by_xpath(_driver, _str_path, _max_check_count):
         return None
 
 
-def get_element_by_xpath(_driver, _str_path, _max_check_count):
+def get_element_by_xpath(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _str_path, _max_check_count):
     try:
         element = None
         if _max_check_count < 0:
@@ -291,19 +289,19 @@ def do_move_url(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _url, _i
     return _driver.current_url
 
 
-def do_elements_click(_driver, _element):
+def do_elements_click(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _element):
     _element[0].click()
     time.sleep(random.randrange(1, m_longint_sleep))
     return 1
 
 
-def do_element_click(_driver, _element):
+def do_element_click(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _element):
     _element.click()
     time.sleep(random.randrange(1, m_longint_sleep))
     return 1
 
 
-def do_switch_iframe(_driver, _iframe_url):
+def do_switch_iframe(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _iframe_url):
     try:
         element_iframe = get_elements_by_xpath(_driver, _iframe_url, -1)
         if element_iframe is None:
