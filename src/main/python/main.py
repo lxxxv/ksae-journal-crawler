@@ -63,7 +63,13 @@ def main(folderpath):
 
     pproperties, driver = init(folderpath)
 
+    idx: int = 0
+    while idx < 1000:
+        url = "http://journal.ksae.org/_common/do.php?a=full&b=22&bidx={bidx}".format(bidx=idx)
+        chromecontroller.do_move_url(driver, url, True)
+
     url: str = chromecontroller.do_move_url(driver, pproperties.url + pproperties.param, True)
+
 
     start(pproperties, driver)
 
