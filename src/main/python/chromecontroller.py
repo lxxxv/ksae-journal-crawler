@@ -205,8 +205,8 @@ def init(folderpath):
 
 def get_driver(download_folderpath):
     driver = None
-    x = -5000
-    y = -5000
+    x = 0
+    y = 0
     width = 1300
     height = 900
 
