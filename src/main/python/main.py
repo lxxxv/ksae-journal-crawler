@@ -27,8 +27,12 @@ def main(folderpath):
     if (driver == None):
         raise RuntimeError("fail chrome driver file load")
 
+    #
+    #
+    #
+    url: str = chromecontroller.do_move_url(driver, pproperties.url + pproperties.param, True)
 
-    chromecontroller.do_move_url(driver, pproperties.url, True)
+
 
     return 0
 

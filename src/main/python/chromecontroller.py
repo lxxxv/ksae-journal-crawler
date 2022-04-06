@@ -10,12 +10,19 @@ import logging
 import re
 import shutil
 
+import time
+import random
+
 from io import BytesIO
 from typing import Optional, AnyStr
 
+import selenium
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.select import Select
+
+
+m_longint_sleep:int = 2
 
 
 def get_chromedriver_filename():
@@ -272,27 +279,27 @@ def get_element_by_xpath(_driver, _str_path, _max_check_count):
         return None
 
 
-def do_move_url(_driver, _url, _is_loop):
+def do_move_url(_driver: selenium.webdriver.chrome.webdriver.WebDriver, _url, _is_loop):
     try:
         _driver.get(_url)
-        sleep(randrange(1, m_longint_sleep))
+        time.sleep(random.randrange(1, m_longint_sleep))
     except Exception as e:
         if (_is_loop == True):
             do_move_url(_driver, _url, _is_loop)
         else:
-            return -1
-    return 1
+            raise RuntimeError("Error: move url : " + _url)
+    return _driver.current_url
 
 
 def do_elements_click(_driver, _element):
     _element[0].click()
-    sleep(randrange(1, m_longint_sleep))
+    time.sleep(random.randrange(1, m_longint_sleep))
     return 1
 
 
 def do_element_click(_driver, _element):
     _element.click()
-    sleep(randrange(1, m_longint_sleep))
+    time.sleep(random.randrange(1, m_longint_sleep))
     return 1
 
 

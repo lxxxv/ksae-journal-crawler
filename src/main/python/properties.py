@@ -4,6 +4,7 @@ import utils
 class Properties:
     def __init__(self):
         self.url = ""
+        self.param = ""
 
 
     def load_properties(self, filepath):
@@ -27,6 +28,9 @@ class Properties:
                         else:
                             if str_config.find("url=")>= 0:
                                 self.url = str_config.replace("url=", "").strip()
+                                status = status + 1
+                            elif str_config.find("param=")>= 0:
+                                self.param = str_config.replace("param=", "").strip()
                                 status = status + 1
                 else:
                     break
