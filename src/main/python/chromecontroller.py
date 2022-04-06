@@ -19,20 +19,12 @@ from selenium.webdriver.support.select import Select
 
 
 def get_chromedriver_filename():
-    """
-    Returns the filename of the binary for the current platform.
-    :return: Binary filename
-    """
     if sys.platform.startswith("win"):
         return "chromedriver.exe"
     return "chromedriver"
 
 
 def get_variable_separator():
-    """
-    Returns the environment variable separator for the current platform.
-    :return: Environment variable separator
-    """
     if sys.platform.startswith("win"):
         return ";"
     return ":"
@@ -54,24 +46,12 @@ def get_platform_architecture():
 
 
 def get_chromedriver_url(version):
-    """
-    Generates the download URL for current platform , architecture and the given version.
-    Supports Linux, MacOS and Windows.
-    :param version: chromedriver version string
-    :return: Download URL for chromedriver
-    """
     base_url = "https://chromedriver.storage.googleapis.com/"
     platform, architecture = get_platform_architecture()
     return base_url + version + "/chromedriver_" + platform + architecture + ".zip"
 
 
 def find_binary_in_path(filename):
-    """
-    Searches for a binary named `filename` in the current PATH. If an executable is found, its absolute path is returned
-    else None.
-    :param filename: Filename of the binary
-    :return: Absolute path or None
-    """
     if "PATH" not in os.environ:
         return None
     for directory in os.environ["PATH"].split(get_variable_separator()):
@@ -93,9 +73,6 @@ def check_version(binary, required_version):
 
 
 def get_chrome_version():
-    """
-    :return: the version of chrome installed on client
-    """
     platform, _ = get_platform_architecture()
     if platform == "linux":
         path = get_linux_executable_path()
@@ -124,13 +101,6 @@ def get_chrome_version():
 
 
 def get_linux_executable_path():
-    """
-    Look through a list of candidates for Google Chrome executables that might
-    exist, and return the full path to first one that does. Raise a ValueError
-    if none do.
-
-    :return: the full path to a Chrome executable on the system
-    """
     for executable in (
             "google-chrome",
             "google-chrome-stable",
@@ -146,18 +116,10 @@ def get_linux_executable_path():
 
 
 def get_major_version(version):
-    """
-    :param version: the version of chrome
-    :return: the major version of chrome
-    """
     return version.split(".")[0]
 
 
 def get_matched_chromedriver_version(version):
-    """
-    :param version: the version of chrome
-    :return: the version of chromedriver
-    """
     doc = urllib.request.urlopen("https://chromedriver.storage.googleapis.com").read()
     root = elemTree.fromstring(doc)
     for k in root.iter("{http://doc.s3.amazonaws.com/2006-03-01}Key"):
@@ -167,27 +129,14 @@ def get_matched_chromedriver_version(version):
 
 
 def get_chromedriver_path():
-    """
-    :return: path of the chromedriver binary
-    """
     return os.path.abspath(os.path.dirname(__file__))
 
 
 def print_chromedriver_path():
-    """
-    Print the path of the chromedriver binary.
-    """
     print(get_chromedriver_path())
 
 
 def download_chromedriver(path: Optional[AnyStr] = None):
-    """
-    Downloads, unzips and installs chromedriver.
-    If a chromedriver binary is found in PATH it will be copied, otherwise downloaded.
-
-    :param str path: Path of the directory where to save the downloaded chromedriver to.
-    :return: The file path of chromedriver
-    """
     chrome_version = get_chrome_version()
     if not chrome_version:
         logging.debug("Chrome is not installed.")
@@ -245,4 +194,119 @@ def init(folderpath):
     elif chromedriver_dir not in os.environ["PATH"]:
         os.environ["PATH"] = chromedriver_dir + get_variable_separator() + os.environ["PATH"]
     return chromedriver_filepath
+
+
+def get_driver(download_folderpath):
+    driver = None
+    x = -5000
+    y = -5000
+    width = 1300
+    height = 900
+
+    try:
+        print("check web driver")
+
+        if (download_folderpath == ""):
+            driver = webdriver.Chrome()
+        else:
+            options = webdriver.ChromeOptions()
+            prefs = {"download.default_directory" : download_folderpath}
+            options.add_experimental_option("prefs", prefs)
+            driver = webdriver.Chrome(chrome_options=options)
+
+        print("ready to web driver")
+        driver.set_window_position(x, y)
+        driver.set_window_size(width, height)
+
+        return driver
+    except Exception as e:
+        print(e)
+        return None
+
+
+def get_elements_by_xpath(_driver, _str_path, _max_check_count):
+    try:
+        element = None
+        if _max_check_count < 0:
+            while (1):
+                element = _driver.find_elements_by_xpath(_str_path)
+                if len(element)> 0:
+                    break
+            return element
+        else:
+            counter = 0
+            while (counter < _max_check_count):
+                element = _driver.find_elements_by_xpath(_str_path)
+                if len(element)> 0:
+                    break
+                else:
+                    counter = counter + 1
+            return element
+    except Exception as e:
+        print(e)
+        return None
+
+
+def get_element_by_xpath(_driver, _str_path, _max_check_count):
+    try:
+        element = None
+        if _max_check_count < 0:
+            while (1):
+                element = _driver.find_element_by_xpath(_str_path)
+                if element is None:
+                    pass
+                else:
+                    break
+            return element
+        else:
+            counter = 0
+            while (counter < _max_check_count):
+                element = _driver.find_element_by_xpath(_str_path)
+                if element is None:
+                    counter = counter + 1
+                else:
+                    break
+            return element
+    except Exception as e:
+        print(e)
+        return None
+
+
+def do_move_url(_driver, _url, _is_loop):
+    try:
+        _driver.get(_url)
+        sleep(randrange(1, m_longint_sleep))
+    except Exception as e:
+        if (_is_loop == True):
+            do_move_url(_driver, _url, _is_loop)
+        else:
+            return -1
+    return 1
+
+
+def do_elements_click(_driver, _element):
+    _element[0].click()
+    sleep(randrange(1, m_longint_sleep))
+    return 1
+
+
+def do_element_click(_driver, _element):
+    _element.click()
+    sleep(randrange(1, m_longint_sleep))
+    return 1
+
+
+def do_switch_iframe(_driver, _iframe_url):
+    try:
+        element_iframe = get_elements_by_xpath(_driver, _iframe_url, -1)
+        if (not element_iframe is None):
+            _driver.switch_to.frame(element_iframe[0])
+        else:
+            return 0
+    except Exception as e:
+        print(e)
+        return 0
+    return 1
+
+
 
