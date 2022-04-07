@@ -10,20 +10,24 @@ import selenium.webdriver
 import selenium.webdriver.chrome.webdriver
 import selenium.webdriver.remote.webelement
 
-def init(folderpath):
-    pproperties: properties.Properties = properties.Properties()
-    status = pproperties.load_properties(folderpath + "application.properties")
-    if (status is None) or (status < 1):
-        raise RuntimeError("HxVwJ8mFPd5fnEmh " + folderpath)
+def init(folderpath: str):
+    try:
+        pproperties: properties.Properties = properties.Properties()
+        status = pproperties.load_properties(folderpath + "application.properties")
+        if (status is None) or (status < 1):
+            raise RuntimeError("HxVwJ8mFPd5fnEmh " + folderpath)
 
-    driver: selenium.webdriver.chrome.webdriver.WebDriver = chromecontroller.get_driver(folderpath)
-    if driver is None:
-        raise RuntimeError("MEpbaPKTa3RdzmNr")
+        driver: selenium.webdriver.chrome.webdriver.WebDriver = chromecontroller.get_driver(folderpath)
+        if driver is None:
+            raise RuntimeError("MEpbaPKTa3RdzmNr")
+    except Exception as e:
+        raise RuntimeError("hRAV2LJX4YArdFfT " + e)
+
 
     return pproperties, driver
 
 
-def start(pproperties, driver):
+def start(pproperties: properties.Properties, driver: selenium.webdriver.chrome.webdriver.WebDriver):
     url: str = driver.current_url
 
     chromecontroller.do_move_url(driver, url, True)
@@ -52,41 +56,89 @@ def start(pproperties, driver):
     return 0
 
 
-def checkurls(pproperties, driver):
-    # idx: int = 0
-    # while idx < 1000:
-    #     url = "http://journal.ksae.org/_common/do.php?a=full&b=22&bidx={bidx}".format(bidx=idx)
-    #     chromecontroller.do_move_url(driver, url, True)
-    return 0
+def load_volume_xpath(pproperties: properties.Properties, driver: selenium.webdriver.chrome.webdriver.WebDriver, volume_xpath_list):
+    try:
+        el_group: selenium.webdriver.remote.webelement.WebElement = chromecontroller.get_element_by_xpath(driver, pproperties.botContentListXpath, -1)
+        if el_group is None:
+            raise RuntimeError("s7dBjGWjb2cjtBG6 " + driver.current_url + pproperties.botContentListXpath)
+
+        el_list: selenium.webdriver.remote.webelement.WebElement = el_group.find_elements_by_tag_name("li")
+        if el_list is None:
+            raise RuntimeError("cnVZGL7b7SFe3Rhd " + driver.current_url + pproperties.botContentListXpath)
+
+        list_count: int = len(el_list)
+
+        idx: int = 0
+        while idx < list_count:
+            volume_xpath_list.append(pproperties.botContentListLiXpath.format(idx=idx+1))
+            idx = idx + 1
+
+    except Exception as e:
+        raise RuntimeError("4vRPqEsskgDgjXbq " + e)
+
+    return len(volume_xpath_list)
 
 
-def main(folderpath):
-    chromedriver_folderpath = folderpath + "chromedriver/"
-    utils.createFolder(chromedriver_folderpath)
-    chromedriver_filepath = chromecontroller.init(chromedriver_folderpath)
+def load_page_xpath(pproperties: properties.Properties, driver: selenium.webdriver.chrome.webdriver.WebDriver, page_xpath_list):
+    try:
+        el_group: selenium.webdriver.remote.webelement.WebElement = chromecontroller.get_element_by_xpath(driver, pproperties.pagingXpath, -1)
+        if el_group is None:
+            raise RuntimeError("4xMwDPdJZDQ767Bf " + driver.current_url + pproperties.pagingXpath)
 
-    print("chromedriver_folderpath : " + chromedriver_folderpath)
-    print("chromedriver_filepath : " + chromedriver_filepath)
-    print("chromedriver_version : " + chromecontroller.get_chrome_version())
+        el_list: selenium.webdriver.remote.webelement.WebElement = el_group.find_elements_by_tag_name("a")
+        if el_list is None:
+            raise RuntimeError("Q79F6EQYpMrRtQy2 " + driver.current_url + pproperties.pagingXpath)
 
-    pproperties, driver = init(folderpath)
+        list_count: int = len(el_list)
 
-    checkurls(pproperties, driver)
+        idx: int = 0
+        while idx < list_count:
+            classname = el_list[idx].get_attribute("class").strip()
+            if classname.find("num") >= 0:
+                page_xpath_list.append(pproperties.pagebodyxpath.format(idx=idx+1))
+            else:
+                if classname.find("next") >= 0:
+                    page_xpath_list.append(pproperties.pagebodyxpath.format(idx=idx+1))
+                    chromecontroller.do_element_click(driver, el_list[idx])
+                    load_page_xpath(pproperties, driver, page_xpath_list)
+            idx = idx + 1
+
+    except Exception as e:
+        raise RuntimeError("4vRPqEsskgDgjXbq " + e)
+
+    return len(page_xpath_list)
 
 
+def main(folderPath):
+    try:
+        volume_xpath_list = []
+        page_xpath_list = []
 
-    url: str = chromecontroller.do_move_url(driver, pproperties.url + pproperties.param, True)
+        chromedriver_FolderPath = folderPath + "chromedriver/"
+        utils.createFolder(chromedriver_FolderPath)
+        chromedriver_filepath = chromecontroller.init(chromedriver_FolderPath)
 
+        print("chromedriver_FolderPath : " + chromedriver_FolderPath)
+        print("chromedriver_filepath : " + chromedriver_filepath)
+        print("chromedriver_version : " + chromecontroller.get_chrome_version())
 
-    start(pproperties, driver)
+        pproperties, driver = init(folderPath)
+
+        chromecontroller.do_move_url(driver, pproperties.url + pproperties.param, True)
+        load_volume_xpath(pproperties, driver, volume_xpath_list)
+        chromecontroller.do_move_url(driver, pproperties.url + pproperties.param, True)
+        load_page_xpath(pproperties, driver, page_xpath_list)
+
+    except Exception as e:
+        raise RuntimeError("2UAqPeu4xAHBHM4W " + e)
 
     return 0
 
 
 
 if __name__ == '__main__':
-    folderpath = os.path.dirname(os.path.abspath(__file__)) + "\\"
-    folderpath = folderpath.replace("src\\main\\python\\", "")
-    folderpath = folderpath.replace("\\", "/")
-    main(folderpath)
+    folderPath = os.path.dirname(os.path.abspath(__file__)) + "\\"
+    folderPath = folderPath.replace("src\\main\\python\\", "")
+    folderPath = folderPath.replace("\\", "/")
+    main(folderPath)
 
