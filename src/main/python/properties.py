@@ -5,7 +5,8 @@ class Properties:
     def __init__(self):
         self.url: str = ""
         self.param: str = ""
-        self.botContentList: str = ""
+        self.botContentListxpath: str = ""
+        self.pagingxpath: str = ""
         self.invalidurl: str = ""
         self.maxbidx: int = 0
 
@@ -29,19 +30,22 @@ class Properties:
                         if str_config.strip() == '':
                             pass
                         else:
-                            if str_config.find("url=")>= 0:
+                            if str_config.find("url=") == 0:
                                 self.url = str_config.replace("url=", "").strip()
                                 status = status + 1
-                            elif str_config.find("param=")>= 0:
+                            elif str_config.find("param=") == 0:
                                 self.param = str_config.replace("param=", "").strip()
                                 status = status + 1
-                            elif str_config.find("botContentList=")>= 0:
-                                self.botContentList = str_config.replace("botContentList=", "").strip()
+                            elif str_config.find("botContentListxpath=") == 0:
+                                self.botContentListxpath = str_config.replace("botContentListxpath=", "").strip()
                                 status = status + 1
-                            elif str_config.find("invalidurl=")>= 0:
+                            elif str_config.find("pagingxpath=") == 0:
+                                self.pagingxpath = str_config.replace("pagingxpath=", "").strip()
+                                status = status + 1
+                            elif str_config.find("invalidurl=") == 0:
                                 self.invalidurl = str_config.replace("invalidurl=", "").strip()
                                 status = status + 1
-                            elif str_config.find("maxbidx=")>= 0:
+                            elif str_config.find("maxbidx=") == 0:
                                 self.maxbidx = int(str_config.replace("maxbidx=", "").strip())
                                 status = status + 1
                 else:
